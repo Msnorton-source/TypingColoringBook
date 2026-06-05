@@ -11,12 +11,11 @@
             --success-color: #2ecc71;
             --info-color: #3498db;
             --neutral-dark: #2c3e50;
-            --key-bg: #555555;
             --gold: #f1c40f;
-            --bg-soft: #87ceeb;
-            /* Sunrise Coral Colors */
+            --bg-soft: #81d4fa; 
             --sunrise-coral: #ffab91; 
             --sunrise-glow: #ffd180;
+            --typing-color: #ff00ff; 
         }
 
         body {
@@ -33,7 +32,7 @@
         p.subtitle { margin: 0 0 30px 0; color: #546e7a; font-size: 20px; font-weight: bold; }
 
         .app-wrapper {
-            width: 100%; max-width: 900px;
+            width: 100%; max-width: 1000px;
             display: flex; flex-direction: column; align-items: center;
             position: relative;
         }
@@ -41,7 +40,6 @@
         /* --- SUNRISE HOME SCREEN --- */
         #home-screen {
             display: flex; flex-direction: column; align-items: center;
-            /* Changed from white to Sunrise Coral Gradient */
             background: linear-gradient(135deg, var(--sunrise-coral) 0%, var(--sunrise-glow) 100%); 
             padding: 40px; border-radius: 30px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
@@ -62,6 +60,7 @@
             padding: 20px; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex; flex-direction: column; align-items: center;
             box-shadow: 0 8px 0px #cfd8dc;
+            position: relative; /* Added to position the checkmark */
         }
         .level-card:hover { 
             transform: translateY(-10px); 
@@ -74,6 +73,24 @@
         }
         .level-card span { font-family: 'Fredoka One', cursive; font-size: 26px; color: var(--neutral-dark); }
 
+        /* --- GREEN CHECKMARK --- */
+        .check-mark {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            font-size: 28px;
+            background: white;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border: 4px solid var(--success-color);
+            z-index: 10;
+        }
+
         /* --- GAME UI --- */
         #game-container {
             display: none; flex-direction: column; align-items: center;
@@ -81,7 +98,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             width: 100%; border: 6px solid white;
         }
-        .game-header-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .game-header-bar { width: 100%; display: flex; justify-content: flex-start; align-items: center; margin-bottom: 15px; }
         .back-btn {
             padding: 10px 22px; font-size: 16px; font-weight: bold; background: #b0bec5;
             color: white; border: none; border-radius: 50px; cursor: pointer;
@@ -103,25 +120,29 @@
         .hidden-text { opacity: 0 !important; }
         .z-bg { z-index: 5; } .z-mid { z-index: 10; } .z-fg { z-index: 20; } .z-txt { z-index: 40; }
 
-        /* --- TYPING UI --- */
+        /* --- TYPING UI WITH DYNAMIC GLOW --- */
         #typing-status-box {
-            margin: 20px 0; font-size: 28px; font-family: 'Fredoka One', cursive;
-            min-height: 50px; background: #eceff1; padding: 10px 40px; border-radius: 50px;
-            border: 4px dashed #b0bec5; letter-spacing: 2px; display: flex; justify-content: center; align-items: center;
+            margin: 20px 0 10px 0; 
+            font-size: 42px; 
+            font-family: 'Fredoka One', cursive;
+            min-height: 80px; 
+            width: 100%; max-width: 800px;
+            background: #eceff1; padding: 10px 40px; border-radius: 50px;
+            border: 4px dashed #b0bec5; letter-spacing: 2px; 
+            display: flex; justify-content: center; align-items: center; box-sizing: border-box;
         }
-        #current-buffer { color: var(--primary-color); text-transform: uppercase; }
-        #buffer-placeholder { color: #90a4ae; font-size: 16px; font-family: 'Nunito', sans-serif; letter-spacing: 0; }
-
-        #keyboard-panel { background: #37474f; padding: 15px; border-radius: 20px; width: 100%; box-sizing: border-box; }
-        .row { display: flex; justify-content: center; gap: 8px; margin-bottom: 5px; }
-        .key {
-            background: #546e7a; color: white; border-radius: 10px;
-            height: 45px; width: 45px; display: flex; align-items: center;
-            justify-content: center; font-weight: bold; font-size: 18px; text-transform: uppercase;
-            box-shadow: 0 4px 0px #263238;
+        #current-buffer { 
+            color: color-mix(in srgb, var(--typing-color), black 30%);
+            text-transform: uppercase; 
+            text-shadow: 0 0 12px var(--typing-color), 0 0 22px var(--typing-color);
+            transition: color 0.4s ease, text-shadow 0.4s ease; 
         }
-        .key.hint-target { background: #00838f; border: 2px solid var(--success-color); }
-        .key.active-press { background: var(--primary-color) !important; transform: translateY(4px); box-shadow: 0 0px 0px #263238; }
+        #buffer-placeholder { 
+            color: #90a4ae; 
+            font-size: 22px; 
+            font-family: 'Nunito', sans-serif; 
+            letter-spacing: 0; 
+        }
 
         /* --- MODAL --- */
         .modal-overlay {
@@ -152,14 +173,9 @@
 
         @keyframes starPop { 0% { transform: scale(0) rotate(-30deg); } 100% { transform: scale(1) rotate(0deg); } }
 
-        /* --- NEW MULTI-DIRECTION CONFETTI --- */
+        /* --- MULTI-DIRECTION CONFETTI --- */
         .confetti { 
-            position: absolute; 
-            width: 24px; 
-            height: 24px; 
-            opacity: 0; 
-            z-index: 1000;
-            pointer-events: none;
+            position: absolute; width: 24px; height: 24px; opacity: 0; z-index: 1000; pointer-events: none;
         }
         @keyframes confettiUp {
             0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
@@ -179,12 +195,19 @@
             <p class="subtitle">Pick a picture to start typing!</p>
             <div class="level-menu">
                 <div class="level-card" onclick="startLevel(1)">
+                    <div class="check-mark" id="check-1">✅</div>
                     <img src="Page 1/Final Image.png" alt="Page 1 Preview">
                     <span>Page 1</span>
                 </div>
                 <div class="level-card" onclick="startLevel(2)">
+                    <div class="check-mark" id="check-2">✅</div>
                     <img src="Page 2/Final Image.png" alt="Page 2 Preview">
                     <span>Page 2</span>
+                </div>
+                <div class="level-card" onclick="startLevel(3)">
+                    <div class="check-mark" id="check-3">✅</div>
+                    <img src="Page 3/Final Image.png" alt="Page 3 Preview">
+                    <span>Page 3</span>
                 </div>
             </div>
         </div>
@@ -192,32 +215,13 @@
         <div id="game-container">
             <div class="game-header-bar">
                 <button class="back-btn" onclick="goToHome()">🏠 EXIT TO MENU</button>
-                <div class="status-badges">
-                    <div class="level-badge" id="level-display">Page 1</div>
-                    <div class="mistake-tracker" id="mistake-display">Mistakes: 0</div>
                 </div>
-            </div>
 
             <div id="canvas-viewport"></div>
 
             <div id="typing-status-box">
                 <span id="buffer-placeholder">Type the words you see on the picture!</span>
                 <span id="current-buffer"></span>
-            </div>
-
-            <div id="keyboard-panel">
-                <div class="row">
-                    <div class="key" id="key-Q">q</div><div class="key" id="key-W">w</div><div class="key" id="key-E">e</div><div class="key" id="key-R">r</div><div class="key" id="key-T">t</div>
-                    <div class="key" id="key-Y">y</div><div class="key" id="key-U">u</div><div class="key" id="key-I">i</div><div class="key" id="key-O">o</div><div class="key" id="key-P">p</div>
-                </div>
-                <div class="row">
-                    <div class="key" id="key-A">a</div><div class="key" id="key-S">s</div><div class="key" id="key-D">d</div><div class="key" id="key-F">f</div><div class="key" id="key-G">g</div>
-                    <div class="key" id="key-H">h</div><div class="key" id="key-J">j</div><div class="key" id="key-K">k</div><div class="key" id="key-L">l</div>
-                </div>
-                <div class="row">
-                    <div class="key" id="key-Z">z</div><div class="key" id="key-X">x</div><div class="key" id="key-C">c</div><div class="key" id="key-V">v</div><div class="key" id="key-B">b</div>
-                    <div class="key" id="key-N">n</div><div class="key" id="key-M">m</div>
-                </div>
             </div>
         </div>
     </div>
@@ -280,18 +284,46 @@
                     "WORMS":   { file: "15Worms.png", tier: "z-fg" },
                     "BOY":     { file: "16Boy.png",   tier: "z-fg" }
                 }
+            },
+            3: {
+                folder: "Page 3/",
+                preview: "Final Image.png",
+                words: {
+                    "SKY":       { file: "1Sky.png",       tier: "z-bg" },
+                    "GRASS":     { file: "2Grass.png",     tier: "z-bg" },
+                    "HILLS":     { file: "3Hills.png",     tier: "z-bg" },
+                    "SUN":       { file: "4Sun.png",       tier: "z-bg" },
+                    "RAINBOW":   { file: "5Rainbow.png",   tier: "z-bg" },
+                    "RAIN":      { file: "6Rain.png",      tier: "z-fg" },
+                    "BARN":      { file: "7Barn.png",      tier: "z-mid" },
+                    "SILO":      { file: "8Silo.png",      tier: "z-mid" },
+                    "HOUSE":     { file: "9House.png",     tier: "z-mid" },
+                    "RABBITS":   { file: "10Rabbits.png",  tier: "z-fg" },
+                    "BEES":      { file: "11Bees.png",     tier: "z-fg" },
+                    "BEEKEEPER": { file: "12Beekeeper.png",tier: "z-fg" },
+                    "HIVE":      { file: "13Hive.png",     tier: "z-fg" },
+                    "HONEY":     { file: "14Honey.png",    tier: "z-fg" },
+                    "FLOWERS":   { file: "15Flowers.png",  tier: "z-fg" }
+                }
             }
         };
+
+        const glowColors = [
+            '#ff00ff', '#ff1493', '#00ced1', '#20b2aa', '#8a2be2', 
+            '#da70d6', '#ff7f50', '#ff8c00', '#1e90ff', '#32cd32'
+        ];
 
         let currentLevel = 1;
         let activeWordsList = [];
         let revealedWords = new Set();
         let typedBuffer = "";
         let gameActive = false;
-        let totalMistakes = 0;
+        let totalMistakes = 0; // Still counting internally for the stars!
         let audioCtx = null;
+        let completedLevels = new Set(); // Tracks which levels have the green check
 
         function initAudioEngine() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        
         function playErrorBloop() {
             if (!audioCtx) return;
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -308,30 +340,25 @@
         }
 
         function playWordSound(wordKey) {
-            // 1. Format the word (e.g., "COW" becomes "Cow")
             let formattedFileName = wordKey.charAt(0).toUpperCase() + wordKey.slice(1).toLowerCase();
-            
-            // 2. Create the spoken word audio
             let spokenAudio = new Audio(`Sounds/${formattedFileName}.mp3`);
             
-            // 3. Tell the engine what to do WHEN the spoken word FINISHES
             spokenAudio.onended = function() {
-                // Try to load the secondary sound (e.g., "Cow2.mp3")
                 let effectAudio = new Audio(`Sounds/${formattedFileName}2.mp3`);
-                
-                // Try to play it
                 effectAudio.play().catch(() => {
-                    // IF it fails (meaning the file doesn't exist), play the fallback!
-                    let randomNum = Math.floor(Math.random() * 2) + 1; // Picks 1 or 2
+                    let randomNum = Math.floor(Math.random() * 2) + 1;
                     let fallbackAudioName = randomNum === 1 ? 'Correct.mp3' : 'Correct2.mp3';
-                    
                     let fallbackAudio = new Audio(`Sounds/${fallbackAudioName}`);
                     fallbackAudio.play().catch(err => console.log("Missing fallback audio: " + fallbackAudioName));
                 });
             };
             
-            // 4. Play the spoken word to kick off the chain!
             spokenAudio.play().catch(err => console.log(`Missing sound: ${formattedFileName}.mp3`));
+        }
+
+        function randomizeGlowColor() {
+            const nextColor = glowColors[Math.floor(Math.random() * glowColors.length)];
+            document.documentElement.style.setProperty('--typing-color', nextColor);
         }
 
         function startLevel(lvlNum) {
@@ -339,11 +366,12 @@
             currentLevel = lvlNum;
             document.getElementById('home-screen').style.display = 'none';
             document.getElementById('game-container').style.display = 'flex';
-            document.getElementById('level-display').innerText = `Page ${lvlNum}`;
-            totalMistakes = 0;
-            document.getElementById('mistake-display').innerText = "Mistakes: 0";
+            
+            totalMistakes = 0; // Reset internal counter
             revealedWords.clear();
             typedBuffer = "";
+            randomizeGlowColor(); 
+            
             const config = levelsConfiguration[lvlNum];
             activeWordsList = Object.keys(config.words);
             const viewport = document.getElementById('canvas-viewport');
@@ -355,68 +383,79 @@
             });
             viewport.innerHTML = DOMString;
             document.getElementById('victory-image').src = config.folder + config.preview;
+            
             const nextBtn = document.getElementById('next-level-btn');
             nextBtn.style.display = levelsConfiguration[currentLevel + 1] ? "inline-flex" : "none";
+            
             gameActive = true;
-            updateKeyboardHints();
+            updateTypingDisplay();
         }
 
         function replayLevel() { closeModal(); setTimeout(() => startLevel(currentLevel), 400); }
         function playNextLevel() { closeModal(); setTimeout(() => startLevel(currentLevel + 1), 400); }
-        function goToHome() { gameActive = false; closeModal(); setTimeout(() => { document.getElementById('game-container').style.display = 'none'; document.getElementById('home-screen').style.display = 'flex'; }, 400); }
+        function goToHome() { 
+            gameActive = false; 
+            closeModal(); 
+            setTimeout(() => { 
+                document.getElementById('game-container').style.display = 'none'; 
+                document.getElementById('home-screen').style.display = 'flex'; 
+                updateLevelCards(); // Ensure checkmarks are shown!
+            }, 400); 
+        }
         function closeModal() { const modal = document.getElementById("victory-modal"); modal.style.opacity = "0"; document.getElementById('v-card').style.transform = "scale(0.8)"; setTimeout(() => { modal.style.display = "none"; }, 400); }
 
-        function updateKeyboardHints() {
-            if (!gameActive) return;
-            document.querySelectorAll('.key').forEach(k => { k.classList.remove('hint-target', 'active-press'); });
-            let expectedNextChars = new Set();
-            activeWordsList.forEach(word => {
-                if (revealedWords.has(word)) return; 
-                if (typedBuffer === "") expectedNextChars.add(word[0]);
-                else if (word.startsWith(typedBuffer) && word !== typedBuffer) expectedNextChars.add(word[typedBuffer.length]);
+        function updateLevelCards() {
+            completedLevels.forEach(lvl => {
+                const check = document.getElementById(`check-${lvl}`);
+                if (check) check.style.display = 'flex';
             });
-            expectedNextChars.forEach(char => { document.getElementById(`key-${char}`)?.classList.add('hint-target'); });
+        }
+
+        function updateTypingDisplay() {
+            if (!gameActive) return;
             document.getElementById("buffer-placeholder").style.display = typedBuffer === "" ? "inline" : "none";
             document.getElementById("current-buffer").innerText = typedBuffer;
         }
 
         window.addEventListener('keydown', (e) => {
             if (!gameActive) return;
-            if (e.key === 'Backspace') { if (typedBuffer.length > 0) typedBuffer = typedBuffer.slice(0, -1); updateKeyboardHints(); return; }
+            if (e.key === 'Backspace') { if (typedBuffer.length > 0) typedBuffer = typedBuffer.slice(0, -1); updateTypingDisplay(); return; }
             let key = e.key.toUpperCase();
             if (!/^[A-Z]$/.test(key)) return; 
-            document.getElementById(`key-${key}`)?.classList.add('active-press');
-            setTimeout(() => document.getElementById(`key-${key}`)?.classList.remove('active-press'), 120);
+            
             let potentialBuffer = typedBuffer + key;
             if (activeWordsList.some(word => !revealedWords.has(word) && word.startsWith(potentialBuffer))) {
                 typedBuffer = potentialBuffer;
             } else if (activeWordsList.some(word => !revealedWords.has(word) && word.startsWith(key))) {
                 typedBuffer = key;
             } else {
-                typedBuffer = ""; totalMistakes++;
-                document.getElementById('mistake-display').innerText = `Mistakes: ${totalMistakes}`;
+                typedBuffer = ""; 
+                totalMistakes++; // Still counting!
                 playErrorBloop();
             }
+            
             if (activeWordsList.includes(typedBuffer) && !revealedWords.has(typedBuffer)) {
                 revealedWords.add(typedBuffer);
                 document.getElementById(`layer-${typedBuffer}`)?.classList.add('revealed');
                 document.getElementById(`text-${typedBuffer}`)?.classList.add('hidden-text');
+                
                 playWordSound(typedBuffer);
                 typedBuffer = ""; 
+                randomizeGlowColor(); 
+
                 if (revealedWords.size === activeWordsList.length) handleWin();
             }
-            updateKeyboardHints();
+            updateTypingDisplay();
         });
 
         function handleWin() {
             gameActive = false;
-            
-            // CONFETTI STORM GENERATOR
+            completedLevels.add(currentLevel); // Mark the level as completed for the green check!
+
             for (let i = 0; i < 40; i++) {
                 createConfetti('up');
                 createConfetti('down');
             }
-
             setTimeout(() => {
                 const modal = document.getElementById("victory-modal");
                 modal.style.display = "flex";
@@ -430,19 +469,11 @@
             c.className = 'confetti';
             c.style.left = Math.random() * 100 + "vw";
             c.style.background = colors[Math.floor(Math.random() * colors.length)];
-            
-            // Set direction animation
             c.style.animationName = (dir === 'up') ? 'confettiUp' : 'confettiDown';
-            
-            // Randomize speed and delay
             c.style.animationDuration = (Math.random() * 2 + 1.5) + "s";
             c.style.animationDelay = (Math.random() * 0.5) + "s";
-            
-            // Randomize size slightly
             const size = (Math.random() * 15 + 15) + "px";
-            c.style.width = size;
-            c.style.height = size;
-
+            c.style.width = size; c.style.height = size;
             document.body.appendChild(c);
             setTimeout(() => c.remove(), 4000);
         }
@@ -457,7 +488,7 @@
                     if (i === count - 1) {
                         const winPhrases = ["Great Job.mp3", "Wonderful.mp3", "Nice Work.mp3", "Amazing.mp3"];
                         const randomPhrase = winPhrases[Math.floor(Math.random() * winPhrases.length)];
-                        new Audio(`Sounds/${randomPhrase}`).play();
+                        new Audio(`Sounds/${randomPhrase}`).play().catch(e => console.log("Missing success audio"));
                     }
                 }, 350 * (i + 1));
             }
