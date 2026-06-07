@@ -60,7 +60,7 @@
             padding: 20px; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex; flex-direction: column; align-items: center;
             box-shadow: 0 8px 0px #cfd8dc;
-            position: relative; /* Added to position the checkmark */
+            position: relative; 
         }
         .level-card:hover { 
             transform: translateY(-10px); 
@@ -83,7 +83,7 @@
             border-radius: 50%;
             width: 45px;
             height: 45px;
-            display: none; /* Hidden by default */
+            display: none; 
             justify-content: center;
             align-items: center;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -209,13 +209,18 @@
                     <img src="Page 3/Final Image.png" alt="Page 3 Preview">
                     <span>Page 3</span>
                 </div>
+                <div class="level-card" onclick="startLevel(4)">
+                    <div class="check-mark" id="check-4">✅</div>
+                    <img src="Page 4/Final Image.png" alt="Page 4 Preview">
+                    <span>Page 4</span>
+                </div>
             </div>
         </div>
 
         <div id="game-container">
             <div class="game-header-bar">
                 <button class="back-btn" onclick="goToHome()">🏠 EXIT TO MENU</button>
-                </div>
+            </div>
 
             <div id="canvas-viewport"></div>
 
@@ -305,6 +310,28 @@
                     "HONEY":     { file: "14Honey.png",    tier: "z-fg" },
                     "FLOWERS":   { file: "15Flowers.png",  tier: "z-fg" }
                 }
+            },
+            4: {
+                folder: "Page 4/",
+                preview: "Final Image.png",
+                words: {
+                    "SKY":     { file: "1Sky.png",     tier: "z-bg" },
+                    "CLOUDS":  { file: "2Clouds.png",  tier: "z-bg" },
+                    "SUN":     { file: "3Sun.png",     tier: "z-bg" },
+                    "CROPS":   { file: "4Crops.png",   tier: "z-bg" },
+                    "SOIL":    { file: "5Soil.png",    tier: "z-bg" },
+                    "BARN":    { file: "6Barn.png",    tier: "z-mid" },
+                    "WORKERS": { file: "7Workers.png", tier: "z-fg" },
+                    "BEANS":   { file: "8Beans.png",   tier: "z-fg" },
+                    "GRAPES":  { file: "9Grapes.png",  tier: "z-fg" },
+                    "CARROTS": { file: "10Carrots.png",tier: "z-fg" },
+                    "BIN":     { file: "11Bin.png",    tier: "z-fg" },
+                    "ROOTS":   { file: "12Roots.png",  tier: "z-mid" },
+                    "ANTS":    { file: "14Ants.png",   tier: "z-fg" },
+                    "BUGS":    { file: "15Bugs.png",   tier: "z-fg" },
+                    "YAMS":    { file: "16Yams.png",   tier: "z-fg" },
+                    "WORMS":   { file: "17Worms.png",  tier: "z-fg" }
+                }
             }
         };
 
@@ -318,9 +345,9 @@
         let revealedWords = new Set();
         let typedBuffer = "";
         let gameActive = false;
-        let totalMistakes = 0; // Still counting internally for the stars!
+        let totalMistakes = 0; 
         let audioCtx = null;
-        let completedLevels = new Set(); // Tracks which levels have the green check
+        let completedLevels = new Set(); 
 
         function initAudioEngine() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
         
@@ -367,7 +394,7 @@
             document.getElementById('home-screen').style.display = 'none';
             document.getElementById('game-container').style.display = 'flex';
             
-            totalMistakes = 0; // Reset internal counter
+            totalMistakes = 0; 
             revealedWords.clear();
             typedBuffer = "";
             randomizeGlowColor(); 
@@ -399,7 +426,7 @@
             setTimeout(() => { 
                 document.getElementById('game-container').style.display = 'none'; 
                 document.getElementById('home-screen').style.display = 'flex'; 
-                updateLevelCards(); // Ensure checkmarks are shown!
+                updateLevelCards(); 
             }, 400); 
         }
         function closeModal() { const modal = document.getElementById("victory-modal"); modal.style.opacity = "0"; document.getElementById('v-card').style.transform = "scale(0.8)"; setTimeout(() => { modal.style.display = "none"; }, 400); }
@@ -430,7 +457,7 @@
                 typedBuffer = key;
             } else {
                 typedBuffer = ""; 
-                totalMistakes++; // Still counting!
+                totalMistakes++; 
                 playErrorBloop();
             }
             
@@ -450,7 +477,7 @@
 
         function handleWin() {
             gameActive = false;
-            completedLevels.add(currentLevel); // Mark the level as completed for the green check!
+            completedLevels.add(currentLevel); 
 
             for (let i = 0; i < 40; i++) {
                 createConfetti('up');
