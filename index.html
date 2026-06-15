@@ -71,7 +71,7 @@
             width: 100%; height: 180px; object-fit: cover; border-radius: 15px; 
             margin-bottom: 15px; border: 4px solid #f1f8e9; 
         }
-        .level-card span { font-family: 'Fredoka One', cursive; font-size: 26px; color: var(--neutral-dark); }
+        .level-card span { font-family: 'Fredoka One', cursive; font-size: 26px; color: var(--neutral-dark); text-align: center; }
 
         /* --- GREEN CHECKMARK --- */
         .check-mark {
@@ -136,6 +136,7 @@
             text-transform: uppercase; 
             text-shadow: 0 0 12px var(--typing-color), 0 0 22px var(--typing-color);
             transition: color 0.4s ease, text-shadow 0.4s ease; 
+            white-space: pre; 
         }
         #buffer-placeholder { 
             color: #90a4ae; 
@@ -196,23 +197,28 @@
             <div class="level-menu">
                 <div class="level-card" onclick="startLevel(1)">
                     <div class="check-mark" id="check-1">✅</div>
-                    <img src="Page 1/Final Image.png" alt="Page 1 Preview">
-                    <span>Page 1</span>
+                    <img src="Page 1/Final Image.png" alt="Old McDonald">
+                    <span>1: Old McDonald</span>
                 </div>
                 <div class="level-card" onclick="startLevel(2)">
                     <div class="check-mark" id="check-2">✅</div>
-                    <img src="Page 2/Final Image.png" alt="Page 2 Preview">
-                    <span>Page 2</span>
+                    <img src="Page 2/Final Image.png" alt="Animals">
+                    <span>2: Animals</span>
                 </div>
                 <div class="level-card" onclick="startLevel(3)">
                     <div class="check-mark" id="check-3">✅</div>
-                    <img src="Page 3/Final Image.png" alt="Page 3 Preview">
-                    <span>Page 3</span>
+                    <img src="Page 3/Final Image.png" alt="Honey Bees">
+                    <span>3: Honey Bees</span>
                 </div>
                 <div class="level-card" onclick="startLevel(4)">
                     <div class="check-mark" id="check-4">✅</div>
-                    <img src="Page 4/Final Image.png" alt="Page 4 Preview">
-                    <span>Page 4</span>
+                    <img src="Page 4/Final Image.png" alt="Harvesting">
+                    <span>4: Harvesting</span>
+                </div>
+                <div class="level-card" onclick="startLevel(5)">
+                    <div class="check-mark" id="check-5">✅</div>
+                    <img src="Page 5/Final Image.png" alt="Dairy Farm">
+                    <span>5: Dairy Farm</span>
                 </div>
             </div>
         </div>
@@ -332,6 +338,42 @@
                     "YAMS":    { file: "16Yams.png",   tier: "z-fg" },
                     "WORMS":   { file: "17Worms.png",  tier: "z-fg" }
                 }
+            },
+            5: {
+                folder: "Page 5/",
+                preview: "Final Image.png",
+                words: {
+                    "SKY":           { file: "1Sky.png",           tier: "z-bg" },
+                    "GRASS":         { file: "2Grass.png",         tier: "z-bg" },
+                    "FIELD":         { file: "3Field.png",         tier: "z-bg" },
+                    "SUN":           { file: "4Sun.png",           tier: "z-bg" },
+                    "CLOUDS":        { file: "5Clouds.png",        tier: "z-bg" },
+                    "BARN":          { file: "7Barn.png",          tier: "z-mid" },
+                    "SILO":          { file: "8Silo.png",          tier: "z-mid" },
+                    "FLOWERS":       { file: "11Flowers.png",      tier: "z-mid" },
+                    "TANKS":         { file: "10Tanks.png",        tier: "z-fg" },
+                    "BIRDS":         { file: "6Birds.png",         tier: "z-fg" },
+                    
+                    /* EXACT STACKING ORDER BELOW (List order controls FG layers) */
+                    "WATER":         { file: "15Water.png",        tier: "z-fg" },
+                    "SPILL":         { file: "12Spill.png",        tier: "z-fg" },
+                    "HAY":           { file: "19Hay back.png",     textOverride: "19Hay.png",   tier: "z-fg" }, 
+                    
+                    "FENCE":         { file: "21Fence back.png",   textOverride: "21Fence.png", tier: "z-fg" },
+                    "COWS":          { file: "9Cows.png",          tier: "z-fg" },
+                    "FENCE_FRONT":   { file: "21Fence front.png",  tier: "z-fg", linkedTo: "FENCE" },
+                    
+                    "FARMERS":       { file: "17Farmers.png",      tier: "z-fg" },
+                    "CALF":          { file: "13Calf.png",         tier: "z-fg" },
+                    "HAY_FRONT":     { file: "19Hay front.png",    tier: "z-fg", linkedTo: "HAY" }, 
+                    /* -------------------------- */
+                    
+                    "JUGS":          { file: "14Jugs.png",         tier: "z-fg" },
+                    "MILKING A COW": { file: "16Milking a cow.png",tier: "z-fg" },
+                    "MILK":          { file: "18Milk.png",         tier: "z-fg" },
+                    "OWL":           { file: "20Owl.png",          tier: "z-fg" },
+                    "CAT":           { file: "22Cat.png",          tier: "z-fg" }
+                }
             }
         };
 
@@ -369,14 +411,21 @@
         function playWordSound(wordKey) {
             let formattedFileName = wordKey.charAt(0).toUpperCase() + wordKey.slice(1).toLowerCase();
             let spokenAudio = new Audio(`Sounds/${formattedFileName}.mp3`);
+            let effectAudio = null;
+
+            // Set a hard 6-second cutoff for this entire word's audio string
+            let cutoffTimeout = setTimeout(() => {
+                if (spokenAudio) { spokenAudio.pause(); }
+                if (effectAudio) { effectAudio.pause(); }
+            }, 6000);
             
             spokenAudio.onended = function() {
-                let effectAudio = new Audio(`Sounds/${formattedFileName}2.mp3`);
+                effectAudio = new Audio(`Sounds/${formattedFileName}2.mp3`);
                 effectAudio.play().catch(() => {
                     let randomNum = Math.floor(Math.random() * 2) + 1;
                     let fallbackAudioName = randomNum === 1 ? 'Correct.mp3' : 'Correct2.mp3';
-                    let fallbackAudio = new Audio(`Sounds/${fallbackAudioName}`);
-                    fallbackAudio.play().catch(err => console.log("Missing fallback audio: " + fallbackAudioName));
+                    effectAudio = new Audio(`Sounds/${fallbackAudioName}`);
+                    effectAudio.play().catch(err => console.log("Missing fallback audio: " + fallbackAudioName));
                 });
             };
             
@@ -400,14 +449,24 @@
             randomizeGlowColor(); 
             
             const config = levelsConfiguration[lvlNum];
-            activeWordsList = Object.keys(config.words);
+            
+            // Filter out linked items from the typing targets
+            activeWordsList = Object.keys(config.words).filter(w => !config.words[w].linkedTo);
+            
             const viewport = document.getElementById('canvas-viewport');
             let DOMString = `<img class="layer-base" src="${config.folder}Original.png">`;
-            activeWordsList.forEach(wordKey => {
+            
+            Object.keys(config.words).forEach(wordKey => {
                 let item = config.words[wordKey];
-                DOMString += `<img id="layer-${wordKey}" class="color-img ${item.tier}" src="${config.folder}${item.file}">`;
-                DOMString += `<img id="text-${wordKey}" class="text-img z-txt" src="${config.folder}Text ${item.file}">`;
+                if (item.linkedTo) {
+                    DOMString += `<img id="layer-extra-${wordKey}" class="color-img ${item.tier}" src="${config.folder}${item.file}">`;
+                } else {
+                    DOMString += `<img id="layer-${wordKey}" class="color-img ${item.tier}" src="${config.folder}${item.file}">`;
+                    let textName = item.textOverride ? item.textOverride : item.file;
+                    DOMString += `<img id="text-${wordKey}" class="text-img z-txt" src="${config.folder}Text ${textName}">`;
+                }
             });
+            
             viewport.innerHTML = DOMString;
             document.getElementById('victory-image').src = config.folder + config.preview;
             
@@ -446,9 +505,15 @@
 
         window.addEventListener('keydown', (e) => {
             if (!gameActive) return;
+            
+            if (e.key === ' ') {
+                e.preventDefault();
+            }
+
             if (e.key === 'Backspace') { if (typedBuffer.length > 0) typedBuffer = typedBuffer.slice(0, -1); updateTypingDisplay(); return; }
             let key = e.key.toUpperCase();
-            if (!/^[A-Z]$/.test(key)) return; 
+            
+            if (!/^[A-Z ]$/.test(key)) return; 
             
             let potentialBuffer = typedBuffer + key;
             if (activeWordsList.some(word => !revealedWords.has(word) && word.startsWith(potentialBuffer))) {
@@ -463,7 +528,19 @@
             
             if (activeWordsList.includes(typedBuffer) && !revealedWords.has(typedBuffer)) {
                 revealedWords.add(typedBuffer);
+                
+                // Reveal main image
                 document.getElementById(`layer-${typedBuffer}`)?.classList.add('revealed');
+                
+                // Reveal any extra linked layers for this word (Find all layers linked to this word)
+                const config = levelsConfiguration[currentLevel];
+                Object.keys(config.words).forEach(wordKey => {
+                    if (config.words[wordKey].linkedTo === typedBuffer) {
+                        document.getElementById(`layer-extra-${wordKey}`)?.classList.add('revealed');
+                    }
+                });
+                
+                // Hide text
                 document.getElementById(`text-${typedBuffer}`)?.classList.add('hidden-text');
                 
                 playWordSound(typedBuffer);
@@ -479,15 +556,18 @@
             gameActive = false;
             completedLevels.add(currentLevel); 
 
+            // Confetti launches right away to celebrate the final keystroke
             for (let i = 0; i < 40; i++) {
                 createConfetti('up');
                 createConfetti('down');
             }
+            
+            // Delays the pop-up modal for 3 full seconds (3000ms) so players can look at the complete artwork and hear sounds finish
             setTimeout(() => {
                 const modal = document.getElementById("victory-modal");
                 modal.style.display = "flex";
                 setTimeout(() => { modal.style.opacity = "1"; document.getElementById('v-card').style.transform = "scale(1)"; awardStars(); }, 50);
-            }, 600);
+            }, 3000);
         }
 
         function createConfetti(dir) {
