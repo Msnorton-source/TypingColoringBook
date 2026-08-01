@@ -164,7 +164,7 @@
         .star { font-size: 90px; color: #e0e0e0; transform: scale(0); transition: color 0.2s; text-shadow: 0 4px 0 #bdbdbd; }
         .star.earned { color: var(--gold); animation: starPop 0.5s forwards; text-shadow: 0 4px 0 #f39c12; }
         .modal-buttons { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 10px; width: 100%; }
-        .modal-card button {
+        .modal-buttons button {
             padding: 18px 40px; font-size: 22px; font-family: 'Fredoka One', cursive; border: none; border-radius: 50px; cursor: pointer;
             transition: all 0.2s; display: flex; align-items: center; gap: 10px; color: white;
         }
@@ -219,6 +219,11 @@
                     <div class="check-mark" id="check-5">✅</div>
                     <img src="Page 5/Final Image.png" alt="Dairy Farm">
                     <span>5: Dairy Farm</span>
+                </div>
+                <div class="level-card" onclick="startLevel(6)">
+                    <div class="check-mark" id="check-6">✅</div>
+                    <img src="Page 6/Final Image.png" alt="Farm Vets">
+                    <span>6: Farm Vets</span>
                 </div>
             </div>
         </div>
@@ -357,9 +362,9 @@
                     /* EXACT STACKING ORDER BELOW (List order controls FG layers) */
                     "WATER":         { file: "15Water.png",        tier: "z-fg" },
                     "SPILL":         { file: "12Spill.png",        tier: "z-fg" },
-                    "HAY":           { file: "19Hay back.png",     textOverride: "19Hay.png",   tier: "z-fg" }, 
+                    "HAY":           { file: "19Hay back.png",     textOverride: "Text 19Hay.png",   tier: "z-fg" }, 
                     
-                    "FENCE":         { file: "21Fence back.png",   textOverride: "21Fence.png", tier: "z-fg" },
+                    "FENCE":         { file: "21Fence back.png",   textOverride: "Text 21Fence.png", tier: "z-fg" },
                     "COWS":          { file: "9Cows.png",          tier: "z-fg" },
                     "FENCE_FRONT":   { file: "21Fence front.png",  tier: "z-fg", linkedTo: "FENCE" },
                     
@@ -373,6 +378,38 @@
                     "MILK":          { file: "18Milk.png",         tier: "z-fg" },
                     "OWL":           { file: "20Owl.png",          tier: "z-fg" },
                     "CAT":           { file: "22Cat.png",          tier: "z-fg" }
+                }
+            },
+            6: {
+                folder: "Page 6/",
+                preview: "Final Image.png",
+                words: {
+                    "SKY":      { file: "1Sky.png",      tier: "z-bg" },
+                    "CLOUDS":   { file: "2Clouds.png",   tier: "z-bg" },
+                    "HILLS":    { file: "3Hills.png",    tier: "z-bg" },
+                    "TREES":    { file: "4Trees.png",    tier: "z-bg" },
+                    "GRASS":    { file: "5Grass.png",    tier: "z-bg" },
+                    "ROAD":     { file: "6Road.png",     tier: "z-bg" },
+                    "POND":     { file: "7Pond.png",     tier: "z-bg" },
+                    "BARN":     { file: "9Barn.png",     tier: "z-mid" },
+                    "HAY":      { file: "8Hay.png",      tier: "z-fg" },
+                    "VAN":      { file: "10Van.png",     tier: "z-fg" },
+                    "GOAT":     { file: "11Goat.png",    tier: "z-fg" },
+                    "FOX":      { file: "12Fox.png",     tier: "z-fg" },
+                    "KIDS":     { file: "13Kids.png",    tier: "z-fg" },
+                    "PONY":     { file: "14Pony.png",    tier: "z-fg" },
+                    "SHEEP":    { file: "15Sheep.png",   tier: "z-fg" },
+                    "LAMB":     { file: "16Lamb.png",    tier: "z-fg" },
+                    "GIRL":     { file: "17Girl.png",    tier: "z-fg" },
+                    "DOG":      { file: "18Dog.png",     tier: "z-fg" },
+                    "PUPPIES":  { file: "19Puppies.png", tier: "z-fg" },
+                    "CHICKEN":  { file: "20Chicken.png", tier: "z-fg" },
+                    "CHICKS":   { file: "21Chicks.png",  tier: "z-fg" },
+                    "KIT":      { file: "22Kit.png",     tier: "z-fg" },
+                    "MOUSE":    { file: "23Mouse.png",   tier: "z-fg" },
+                    "FROG":     { file: "24Frog.png",    tier: "z-fg" },
+                    "SPIDER":   { file: "25Spider.png",  tier: "z-fg" },
+                    "VET":      { file: "26Vet.png",     tier: "z-fg" }
                 }
             }
         };
@@ -413,7 +450,6 @@
             let spokenAudio = new Audio(`Sounds/${formattedFileName}.mp3`);
             let effectAudio = null;
 
-            // Set a hard 6-second cutoff for this entire word's audio string
             let cutoffTimeout = setTimeout(() => {
                 if (spokenAudio) { spokenAudio.pause(); }
                 if (effectAudio) { effectAudio.pause(); }
@@ -450,7 +486,6 @@
             
             const config = levelsConfiguration[lvlNum];
             
-            // Filter out linked items from the typing targets
             activeWordsList = Object.keys(config.words).filter(w => !config.words[w].linkedTo);
             
             const viewport = document.getElementById('canvas-viewport');
@@ -462,8 +497,8 @@
                     DOMString += `<img id="layer-extra-${wordKey}" class="color-img ${item.tier}" src="${config.folder}${item.file}">`;
                 } else {
                     DOMString += `<img id="layer-${wordKey}" class="color-img ${item.tier}" src="${config.folder}${item.file}">`;
-                    let textName = item.textOverride ? item.textOverride : item.file;
-                    DOMString += `<img id="text-${wordKey}" class="text-img z-txt" src="${config.folder}Text ${textName}">`;
+                    let textName = item.textOverride ? item.textOverride : `Text ${item.file}`;
+                    DOMString += `<img id="text-${wordKey}" class="text-img z-txt" src="${config.folder}${textName}">`;
                 }
             });
             
@@ -529,10 +564,8 @@
             if (activeWordsList.includes(typedBuffer) && !revealedWords.has(typedBuffer)) {
                 revealedWords.add(typedBuffer);
                 
-                // Reveal main image
                 document.getElementById(`layer-${typedBuffer}`)?.classList.add('revealed');
                 
-                // Reveal any extra linked layers for this word (Find all layers linked to this word)
                 const config = levelsConfiguration[currentLevel];
                 Object.keys(config.words).forEach(wordKey => {
                     if (config.words[wordKey].linkedTo === typedBuffer) {
@@ -540,7 +573,6 @@
                     }
                 });
                 
-                // Hide text
                 document.getElementById(`text-${typedBuffer}`)?.classList.add('hidden-text');
                 
                 playWordSound(typedBuffer);
@@ -556,13 +588,11 @@
             gameActive = false;
             completedLevels.add(currentLevel); 
 
-            // Confetti launches right away to celebrate the final keystroke
             for (let i = 0; i < 40; i++) {
                 createConfetti('up');
                 createConfetti('down');
             }
             
-            // Delays the pop-up modal for 3 full seconds (3000ms) so players can look at the complete artwork and hear sounds finish
             setTimeout(() => {
                 const modal = document.getElementById("victory-modal");
                 modal.style.display = "flex";
